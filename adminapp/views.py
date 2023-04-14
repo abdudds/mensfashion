@@ -52,19 +52,28 @@ class DashboardView(PermissionRequiredMixin, TemplateView):
     
     try:
         todays_income = round(Payment.objects.filter(created_at=date.today()).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
+        cod_income = round(Payment.objects.filter(payment_method='cash on delivery', paid=True).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
+        cod_pending = round(Payment.objects.filter(payment_method='cash on delivery').aggregate(Sum('amount_paid'))['amount_paid__sum'],2) - cod_income
+        payments = Payment.objects.all()
+        total_sale = round(sum(float(payment.amount_paid) for payment in payments if payment.amount_paid),2)
+        razor_income = round(Payment.objects.filter(payment_method='razorpay').aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
+        cod_percent = round(cod_income*100/total_sale, 2)
+        pending_percent = round(cod_pending*100/total_sale, 2)
+        razor_percent = round(razor_income*100/total_sale, 2)
+    
     except:
         todays_income = 0
-
-    cod_income = round(Payment.objects.filter(payment_method='cash on delivery', paid=True).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
-    cod_pending = round(Payment.objects.filter(payment_method='cash on delivery').aggregate(Sum('amount_paid'))['amount_paid__sum'],2) - cod_income
+        cod_income = 0
+        cod_pending = 0
+        payments = None
+        total_sale = 0
+        razor_income = 0
+        cod_percent = 0
+        pending_percent = 0
+        razor_percent = 0
     
     # total_sale = Payment.objects.all().aggregate(sum('amount_paid'))['amount_paid__sum']
-    payments = Payment.objects.all()
-    total_sale = round(sum(float(payment.amount_paid) for payment in payments if payment.amount_paid),2)
-    razor_income = round(Payment.objects.filter(payment_method='razorpay').aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
-    cod_percent = round(cod_income*100/total_sale, 2)
-    pending_percent = round(cod_pending*100/total_sale, 2)
-    razor_percent = round(razor_income*100/total_sale, 2)
+    
 
     last_month = datetime.now() - timedelta(days=30)
 
