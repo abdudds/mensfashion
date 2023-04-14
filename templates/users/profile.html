@@ -1,0 +1,139 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block link %}<link rel="stylesheet" href="{% static 'css/register.css' %}">{% endblock  %}
+
+
+{% block content %}
+<section style="background-color: #eee;">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col">
+          <nav class="bg-light rounded-3 p-3 mb-4">
+            <h2>Welcome {{ user.first_name|title}}</h2>
+          </nav>
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <img src="{{ user.image.url }}" alt="avatar"
+                class="rounded-circle img-fluid" style="width: 150px;"> 
+              <h5 class="my-3">{{ user.first_name|title}} {{ user.last_name|title}}</h5>
+              <h5 class="my-3">Log In as: {{ user.username}}</h5>
+
+              <div class="d-flex justify-content-center mb-2">
+              </div>
+            </div>
+          </div>
+          <div class="card mb-4 mb-lg-0">
+            <div class="card-body p-0">
+              <ul class="list-group list-group-flush rounded-3">
+                <a href="{% url 'user-profile-edit' user.id %}"><li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                  <i class="fa regular fa-pen-to-square fa-lg" style="color: #55acee;"></i>
+                  <p class="mb-0">Edit Profile</p>
+                </li></a>
+                <li class="list-group-item p-3">
+                    <a href="{% url 'user-change-password' %}" class="d-flex justify-content-between align-items-center">
+                    <i class="fa fa-key fa-lg" aria-hidden="true" style="color: #333333;"></i>
+                    <p class="mb-0">Change Password</p></a>
+                </li></a>
+                <li class="list-group-item p-3">
+                    <a href="{% url 'manage-address' user.id %}" class="d-flex justify-content-between align-items-center">
+                    <i class="fas fa-regular fa-address-book fa-lg" style="color: #55acee;"></i>
+                    <p class="mb-0">Manage Addresses</p></a>
+                </li>
+                <li class="list-group-item p-3">
+                    <a href="{% url 'logout' %}" class="d-flex justify-content-between align-items-center">
+                  <i class="fa-sharp fa-solid fa-power-off fa-lg" style="color: #ac2bac;"></i>
+                  <p class="mb-0">Logout</p></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Full Name</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ user.first_name|title }}  {{  user.last_name|title }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ user.email }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Date Joined</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ user.date_joined.date }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Mobile</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ user.mobile }}</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Address</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">{{ user.address }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <a href="{% url 'userorder' %}">
+                <div class="card rounded mb-4 mb-md-0">
+                  <div class="card-body mx-auto">
+                    <img src="{% static 'img/box.png' %}" alt="avatar"
+                    class="rounded img-fluid" style="width: 150px;">
+                    <h3>My Orders</h3> 
+                  </div>
+                </div>
+              </a>    
+            </div>
+            <div class="col-md-6">
+              <div class="card rounded mb-4 mb-md-0">
+                <div class="card-body mx-auto">
+                  <img src="{% static 'img/wishlist.png' %}" alt="avatar"
+                  class="rounded img-fluid" style="width: 150px;">
+                  <h3>My WishList</h3> 
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
+
+
+{% block footer %}
+    
+{% endblock footer %}
+    
+    

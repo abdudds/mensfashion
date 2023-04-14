@@ -1,0 +1,84 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Wish List</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'users-home' %}">Home</a>
+                            <a href="{% url 'shop' %}">Shop</a>
+                            <span>Wish List</span> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="shopping__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    {% comment %} <th>Quantity</th> {% endcomment %}
+                                    <th>Price</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for cart in wish_list %}
+                                <tr>
+                                    <td class="product__cart__item">
+                                        <a href="{% url 'product' cart.product.id %}">
+                                            <div class="product__cart__item__pic" style="width: 90px;">
+                                                <img src="{{ cart.product.image.url }}" alt="">
+                                            </div>
+                                        </a>
+                                        <div class="product__cart__item__text" style="padding-top: 37px;">
+                                            <h6>{{ cart.product.name }}</h6>
+                                        </div>
+                                    </td>
+                                    {% comment %} <td class="quantity__item">
+                                        <div class="quantity">
+                                            <div class="pro-qty-2">
+                                                <input type="text" value="{{ cart.quantity }}">
+                                            </div>
+                                        </div>
+                                    </td>{% endcomment %}
+                                    <td class="cart__price"><h5>$ {{ cart.product.price }}</h5></td>
+                                    <td class="cart__close"><a href="{% url 'delete_wishlist' cart.id %}" style="margin-left: 50px;"><i class="fa fa-close"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                                   
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shopping Cart Section End -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    <script>
+        alertify.set('notifier','position', 'top-right');
+        {% for msg in messages %}
+            alertify.success('{{ msg }}');
+        {% endfor %}
+   </script>
+{% endblock content %}
+

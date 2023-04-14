@@ -1,0 +1,116 @@
+{% extends 'adminapp/base.html' %}
+
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row ">
+            <div class="col-12 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <div class="text-center d-flex">
+                    <h2 class="card-title">View Order</h2>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <h4>Shipping Details</h4>
+                      <hr />
+                      <label class="mt-2"> Name</label>
+                      <div class="border p-1">{{order.delivery_address.first_name}}</div>
+                      <label class="mt-2">Email</label>
+                      <div class="border p-1">{{order.user.email}}</div>
+                      <label class="mt-2">Phone Number</label>
+                      <div class="border p-1">{{order.delivery_address.mobile}}</div>
+                      <label class="mt-2">Delivery Address</label>
+                      <div class="border p-1">
+                        {{order.delivery_address.address}}, {{order.delivery_address.district}}, {{order.delivery_address.state}} - {{order.delivery_address.pincode}} <br />
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <h4>Order Details</h4>
+                      <table class="table table-borderless">
+                        <thead class="text-muted">
+                          <tr class="small text-uppercase">
+                            <th scope="col">Product</th>
+                            <th scope="col" class="text-center">Quantity</th>
+                            <th scope="col" class="text-center">Price</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for item in order_items %}
+                          <tr>
+                            <td>
+                              <figure class=" align-items-center">
+                                <div class="how-itemcart1">
+                                  <img src="{{ item.variant.product.image.url }}" style="height: 50px;display: block;margin-left: 20px;"alt="IMG"/>                                   
+                                </div>
+                              </figure>
+                            </td>
+                            <td class="column text-center">
+                              <label class="my-3" for="">{{item.quantity}}</label>
+                            </td>
+                            <td>
+                              <div class="price-wrap my-3 column text-center">
+                                <var class="price">₹ {{item.total_price}}</var><br />
+                              </div>
+                              <!-- price-wrap .// -->
+                            </td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                      <hr />
+                      <div>
+                      <br />
+                      <h5>
+      
+                        Grand Total: ₹{{order.payment.amount_paid}}
+                        <br />
+                        </h5>
+                        <br />
+                        <h6>Payment Mode : {{order.payment.payment_method}}</h6>
+                        <br />
+                        {% if order.status == 'Cancelled' %}
+                        <h6>
+                          Order Status:
+                          <span class="text-danger">{{order.status}}</span>
+                        </h6>
+                        <br />
+                        {% elif order.status == 'Pending' %}
+                        <h6>
+                          Order Status:
+                          <span class="text-warning">{{order.status}}</span>
+                        </h6>
+                        <br />
+                        {% else %}
+                        <h6>
+                          Order Status:
+                          <span class="text-success">{{order.status}}</span>
+                        </h6>
+                        <br />
+                        {% endif %}
+                        <h6>Order Id : {{order.order_no}}</h6>
+                        <br />
+                        <h6>Payment ID : {{order.payment.payment_id}}</h6>
+                        <br />
+                      {% if order.status != 'Cancelled' and order.status != 'Returned' %}
+                        <h6>
+                            {% comment %} <input type="hidden" name="order_id" value="{{ order.id }}"> {% endcomment %}
+                            <a href="{% url 'cancelorder' order.id %}"><button class="btn btn-danger btn-sm" id ="refundButton">Cancel Order</button></a> 
+                        </h6>
+                      {% else %}
+                      <a href="#" class="btn btn-secondary btn-sm disabled" role="button" aria-disabled="true">Cancelled</a>
+                      <h6 class="mt-3 font-weight-bold">Refund ID : {{order.payment.refund_id}}</h6>
+                      {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+    </div> 
+</div>  
+{% endblock content %}
+    

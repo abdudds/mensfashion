@@ -1,0 +1,121 @@
+{% extends 'adminapp/base.html' %}
+
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="row ">
+            <div class="col-12 grid-margin">
+              <div class="card">
+                <div class="card-body">
+                  <div class="text-center d-flex">
+                    <h3 class="card-title">Product List</h3>
+                    <a href="{% url 'add_product' %}" class="btn btn-success ml-auto" style="height: 31px;">Add Product</a>
+                    {% if searchproduct %}
+                    <a href="{% url 'products' %}" class="btn btn-outline-primary mx-3" style="height: 31px;">Back</a>
+                    {% endif %}
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                              <th> Image </th>
+                              <th> Product Name </th>
+                              <th> Brand </th>
+                              <th> Category </th>
+                              {% comment %} <th> Sub Category </th> {% endcomment %}
+                              <th> Price </th>
+                              <th> Stock </th>
+                              <th> Action </th>
+                            </tr>
+                          </thead>
+                        <tbody>
+                          
+                          {% if searchproduct %}
+                            {% if products == 'noproduct' %}
+                            <h2 class="text-center">Product not available!</h2>
+                            {% else %}
+                             {% for i in page_obj %}
+                             <tr>
+                              <td>
+                                  <img src="{{ i.image.url }}" alt="image" />
+                                  {% comment %} <span class="pl-2">Henry Klein</span> {% endcomment %}
+                              </td>
+                              <td> {{ i.name }} </td>
+                              <td>{{ i.brand }}</td>
+                              <td> {{ i.category.name }} </td>
+                              {% comment %} <td> {{ i.subcategory.name }} </td> {% endcomment %}
+                              <td> {{ i.price }} </td>
+                              <td class="text-center"> {{ i.stock }} </td>
+                              <td>
+                                  <div class="edit-category d-flex ml-auto">
+                                    <a href="{% url 'edit_product' i.id %}"><i class="fas fa-edit text-primary mr-2"></i></a>
+                                    <a href="{% url 'del_product' i.id %}"><i class="fas fa-trash text-danger"></i></a>
+                                  </div>
+                              </td>
+                          </tr>
+                             {% endfor %}
+                             {% endif %}
+                          {% else %}    
+                            
+                          {% for i in page_obj %}
+                            <tr>
+                                <td>
+                                    <img src="{{ i.image.url }}" alt="image" />
+                                    {% comment %} <span class="pl-2">Henry Klein</span> {% endcomment %}
+                                </td>
+                                <td> {{ i.name }} </td>
+                                <td>{{ i.brand }}</td>
+                                <td> {{ i.category.name }} </td>
+                                <td> {{ i.price }} </td>
+                                <td class="text-center"> {{ i.stock }} </td>
+                                <td>
+                                    <div class="edit-category d-flex ml-auto">
+                                      <a href="{% url 'edit_product' i.id %}"><i class="fas fa-edit text-primary mr-2"></i></a>
+                                      <a href="{% url 'del_product' i.id %}"><i class="fas fa-trash text-danger"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+                       </tbody>
+                    </table>
+                  </div>
+                  
+                  <div class="col-lg-12 mt-3">
+                    <div class="pagination justify-content-center">
+                      <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                          {% if page_obj.has_previous %}
+                          <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                              <i class="ti-angle-left">PREVIOUS</i>
+                            </a>
+                          </li>
+                          {% endif %}
+                          {% for page in page_obj.paginator.page_range %}
+                          {% if page_obj.number == page %}
+                          <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+                          {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %} <li class="page-item"><a
+                              class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                              <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                <i class="ti-angle-right">NEXT</i>
+                              </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                      </nav>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> 
+    </div> 
+</div>  
+{% endblock content %}
+    

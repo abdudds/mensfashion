@@ -1,0 +1,255 @@
+{% extends 'adminapp/base.html' %}
+
+
+{% block content %}
+{% comment %} <!-- <div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row ">
+      <div class="col-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <div class="text-center d-flex">
+              <h3 class="card-title">Order List</h3>
+            </div>
+            <div class="table-responsive">
+
+              {% if orders %}
+
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th> Sl.No </th>
+                    <th> Order No </th>
+                    <th> Order Date </th>
+                    <th> Order Status </th>
+                    <th> Total Amount </th>
+                    <th> Action </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for i in page_obj %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td> {{ i.order_no }} </td>
+                    <td> {{ i.order_date }} </td>
+                    <td> {{ i.status }} </td>
+                    <td> {{ i.payment.amount_paid }} </td>
+                    
+                    <td>
+                      {% if i.status == 'Delivered' %}
+                      <label class="badge badge-success">Delivered</label>
+                      {% elif i.status == 'Cancelled' %}
+                      <label class="badge badge-danger">Cancelled</label>
+                      {% elif i.status == 'Returned' %}
+                      <label class="badge badge-warning">Returned</label>
+                      {%else%}
+                      <label class="badge badge-info p-2" type="button" data-bs-toggle="modal"
+                        data-bs-target="#myModal{{i.id}}" id="Modal_button"
+                        style="  border: 1px solid red;">Change</button>
+                        {%endif%}
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> --> {% endcomment %}
+
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row ">
+      <div class="col-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="p-2 mb-3" style="border-bottom: 2px solid orange;">Manage Order</h3>
+            <div class="container-fluid">
+              {% if orders %}
+              <table class="table table table-responsive">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Order No</th>
+                    <th scope="col">Order Date</th>
+                    {% comment %} <th scope="col">name</th> {% endcomment %}
+                    <th scope="col">email</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">amount</th>
+                    <th scope="col">Coupon</th>
+                    <th scope="col">payment mode</th>            
+                    <th scope="col">status</th>
+                    <th scope="col">action</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="myTable">
+
+                  {% for i in page_obj %}
+
+                  <tr>
+                    
+                    <th scope="row">{{i.order_no}}</th>
+                    <td>{{i.order_date}}</td>
+                    {% comment %} <td>{{i.user.first_name}}</td> {% endcomment %}
+                    <td>{{i.user.email}}</td>
+                    <td>{{i.user.mobile}}</td>
+                    <td>₹{{i.order_total}}</td>
+                    <th scope="row">{{i.coupon.code}}</th>
+                    <td>{{i.payment.payment_method}}</td>
+                    <td>{{i.status}}</td>
+                    <td>
+                      {% if i.status == 'Delivered' %}
+                      <label class="badge badge-success">Delivered</label>
+                      {% elif i.status == 'Cancelled' %}
+                      <label class="badge badge-danger">Cancelled</label>
+                      {% elif i.status == 'Returned' %}
+                      <label class="badge badge-warning">Returned</label>
+                      {%else%}
+                      <label class="badge badge-info p-2" type="button" data-toggle="modal" data-target="#myModal{{i.id}}"
+                        id="Modal_button" style="  border: 1px solid red;">Change</button>
+                        {%endif%}
+                    </td>
+                    <td>
+                      {% if i.status == 'Order Confirmed' %}
+
+                      <!-- <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancel{{i.id}}">
+                            Cancel
+                          </button> -->
+                      {% elif i.is_returned %}
+                      <b>Reason : </b>
+                      <p>{{i.return_reason}}</p>
+                      {% endif %}
+                    </td>
+                  </tr>
+
+                    <!-- Status Modal -->
+                    <div class="modal fade" id="myModal{{i.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                      aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5>Change Status</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <form action="{% url 'update_order' i.id %}" method="POST" id="statusForm">
+                              {% csrf_token %}
+
+                              {% if i.status == 'Order Confirmed' %}
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Order Confirmed" disabled checked>
+                                <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Shipped">
+                                <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Out for delivery" disabled>
+                                <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Delivered" disabled>
+                                <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
+                              </div>
+
+                              {% elif i.status == 'Shipped' %}
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Order Confirmed" disabled>
+                                <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Shipped" disabled checked>
+                                <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Out for delivery">
+                                <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Delivered" disabled>
+                                <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
+                              </div>
+
+                              {% else %}
+
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Order Confirmed" disabled>
+                                <label for="dreamweaver" class="ml-2 mt-2">Order Confirmed</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Shipped" disabled>
+                                <label for="dreamweaver" class="ml-2 mt-2 text-info">Shipped</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Out for delivery" disabled checked>
+                                <label for="dreamweaver" class="ml-2 mt-2 text-warning">Out for delivery</label>
+                              </div>
+                              <div class="row mb-2">
+                                <input class="ml-3" type="radio" id="dreamweaver" name="status" value="Delivered">
+                                <label for="dreamweaver" class="ml-2 mt-2 text-success">Delivered</label>
+                              </div>
+                              {% endif %}
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit  " class="btn btn-primary" onclick="return confirm('Are You Sure?')">Save changes</button>
+                              </div>
+                            </form>
+                          </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% else %}
+            <h4 class="text-center">No records</h4>
+            {% endif %}
+            <!-- Start pagination -->
+            <div class="col-lg-12 mt-3">
+              <div class="pagination justify-content-center">
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <i class="ti-angle-left">PREVIOUS</i>
+                      </a>
+                    </li>
+                    {% endif %}
+                    {% for page in page_obj.paginator.page_range %}
+                    {% if page_obj.number == page %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ page }}</a></li>
+                    {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %} <li class="page-item"><a
+                        class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                      {% endif %}
+                      {% endfor %}
+                      {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                          <i class="ti-angle-right">NEXT</i>
+                        </a>
+                      </li>
+                      {% endif %}
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <!-- End pagination -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock content %}

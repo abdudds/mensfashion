@@ -1,0 +1,100 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Order Confirmation</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'users-home' %}">Home</a>
+                            <a href="{% url 'shop' %}">Shop</a>
+                            <a href="{% url 'view_cart' %}">Shopping Cart</a>
+                            <span>Shopping Cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+     <!-- Checkout Section Begin -->
+     <section class="py-5">
+        <div class="container">
+            <div class="">
+                <div class="row">
+                    <div class="col-lg-12 col-md-6" style="background:#f3f2ee">
+                        <div class="ml-5">
+                            <h4 class="mt-4 mb-2" style="">Order Confirmed!</h4>
+                            <h5>Hello {{ name }}</h5>
+                            <p>Your order has been confirmed and will be shipped in 2 days!</p>
+                        </div>
+                        <hr>
+                        <div class="order_detail d-flex mb-2">
+                            <div class="order_date col-lg-4 col-md-6">
+                                <h5 style="font-weight:bold;margin-bottom:10px;">Order Date</h5>
+                                <h6>{{ order.order_date }}</h6>
+                            </div>
+                            <div class="order_no col-lg-4 col-md-6">
+                                <h5 style="font-weight:bold;margin-bottom:10px;">Order No</h5>
+                                <h6>{{ order.order_no }}</h6>
+                            </div>
+                            <div class="shipping_address col-lg-4 col-md-12">
+                                <h5 style="font-weight:bold;margin-bottom:10px;">Shipping Address</h5>
+                                <h6>{{ order.delivery_address.first_name|title}} {{ order.delivery_address.mobile }}</h6>
+                                <h6>{{ order.delivery_address.address }}, {{ order.delivery_address.district }}, {{ order.delivery_address.state }} - {{ order.delivery_address.pincode }}</h6>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="product_detail col-lg-12 d-flex mb-3">
+                            <div class="col-lg-3">
+                                <h5 style="font-weight:bold;margin-left:20px">Product</h5>
+                            </div>
+                            <div class="col-lg-3"><h5 style="font-weight:bold;">Price</h5></div>
+                            <div class="col-lg-3"><h5 style="font-weight:bold;">Quantity</h5></div>
+                            <div class="col-lg-3"><h5 style="font-weight:bold;margin-left: 10px;">Total Price</h5></div>
+                        </div>
+
+                        {% for cart in items %}
+                        <div class="product_detail col-lg-12 d-flex">
+                            <div class="col-lg-3 d-flex">
+                                <div class="" style="width: 90px;">
+                                    <img src="{{ cart.variant.product.image.url }}" alt="">
+                                </div>
+                                <div class="">
+                                    <h6>{{ cart.variant.product.name }}</h6>
+                                    <span>Color:</span><span> {{ cart.variant.color }}</span><br>
+                                    <span>Size:</span><span> {{ cart.variant.size }}</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">$ {{ cart.variant.product.price }}</div>
+                            <div class="col-lg-3 ml-4">{{ cart.quantity }}</div>
+                            <div class="col-lg-3 ml-2">$ {{ cart.total_price }}</div>
+                        </div>
+                        <hr>
+                        {% endfor %}
+                        
+                        <div class="col-lg-3 ml-auto">
+                            <span>Sub Total</span><span style="margin-left: 40px;">$ {{ order.order_total }}</span>
+                            {% comment %} <p>Shipping Fee         $ 120.00</p> {% endcomment %}
+                            {% comment %} <p>Tax         $ 120.00</p> {% endcomment %}
+                            <span>Discount</span><span style="margin-left: 44px;">$ {{ order.discount }}</span>
+                            <hr>
+                            <span>Total</span><span style="margin-left: 71px;font-weight:bold;">$ {{ total }}</span>
+                            <hr>
+                        </div>
+                        <p>We will be sending shipping confirmation email when the item shipped successfully!</p>
+                        <h5>Thanks for shopping with us</h5>
+                        <p>MensFashion Team</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Checkout Section End -->
+
+{% endblock content %}

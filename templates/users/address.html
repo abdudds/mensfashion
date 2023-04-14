@@ -1,0 +1,109 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Manage Addresses</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'users-home' %}">Home</a>
+                            <a href="{% url 'user-profile' user.id %}">Profile</a>
+                            <span>Manage Address</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                      <div class="card-body text-center">
+                        <img src="{{ user.image.url }}" alt="avatar"
+                          class="rounded-circle img-fluid" style="width: 150px;"> 
+                        <h5 class="my-3">{{ user.first_name|title}} {{ user.last_name|title}}</h5>
+                        <h5 class="my-3">Log In as: {{ user.username}}</h5>
+          
+                        <div class="d-flex justify-content-center mb-2">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                      <div class="card-body p-0">
+                        <ul class="list-group list-group-flush rounded-3">
+                          <a href="{% url 'user-profile-edit' user.id %}"><li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <i class="fa regular fa-pen-to-square fa-lg" style="color: #55acee;"></i>
+                            <p class="mb-0">Edit Profile</p>
+                          </li></a>
+                          <li class="list-group-item p-3">
+                              <a href="{% url 'user-change-password' %}" class="d-flex justify-content-between align-items-center">
+                              <i class="fa fa-key fa-lg" aria-hidden="true" style="color: #333333;"></i>
+                              <p class="mb-0">Change Password</p></a>
+                          </li></a>
+                          <li class="list-group-item p-3">
+                              <a href="{% url 'manage-address' user.id %}" class="d-flex justify-content-between align-items-center">
+                              <i class="fas fa-regular fa-address-book fa-lg" style="color: #55acee;"></i>
+                              <p class="mb-0">Manage Addresses</p></a>
+                          </li>
+                          <li class="list-group-item p-3">
+                              <a href="{% url 'logout' %}" class="d-flex justify-content-between align-items-center">
+                            <i class="fa-sharp fa-solid fa-power-off fa-lg" style="color: #ac2bac;"></i>
+                            <p class="mb-0">Logout</p></a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                </div>                   
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h3 class="mt-3 mb-2 fw-bold">Manage Addresses</h3><hr> 
+                            {% for address in addresses  %}
+                            <div class="shopping__cart__table border-rounded">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="product__cart__item">
+                                                <h6>{{ address.first_name|title }} {{address.mobile }}</h6>
+                                                <p>{{ address.address}}, {{ address.district}}, {{ address.state}} - {{ address.pincode}} </p>
+                                            </td>
+                                            <td class="quantity__item text-right">
+                                                <a href="{% url 'delete-address' address.id %}"><i class="fa fa-trash"></i></a><a class="ml-2" href="{% url 'edit-address' address.id %}"><i class="fa regular fa-pen-to-square"></i></a>  
+                                            </td>
+                                        </tr>
+                                    </tbody>  
+                                <table>
+                                    
+                            </div>
+                            {% endfor %}
+
+                            <div class="row">
+                                <div class="col-lg-12 col-md-6 col-sm-6">
+                                    <div class="btn_container mt-3 mb-5 mx-auto" style="padding: 20px;text-align: center;">
+                                        <a href="{% url 'add-address' user.id %}" class="btn btn-primary">Add Address</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
+
+{% block footer %}
+    
+{% endblock footer %}

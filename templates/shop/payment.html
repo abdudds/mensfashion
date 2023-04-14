@@ -1,0 +1,149 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__text">
+                    <h4>Payment</h4>
+                    <div class="breadcrumb__links">
+                        <a href="{% url 'users-home' %}">Home</a>
+                        <a href="{% url 'shop' %}">Shop</a>
+                        <a href="{% url 'view_cart' %}">Shopping Cart</a>
+                        <span>Payment</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+<div class="container">
+
+<div class="product_detail heading my-5 ml-5">
+    <h3 style="font-weight:bold;">Product Details</h3>
+</div>
+<div class="product_detail col-lg-12 d-flex mb-3">
+    <div class="col-lg-3">
+        <h5 style="font-weight:bold;margin-left:20px">Product</h5>
+    </div>
+    <div class="col-lg-3"><h5 style="font-weight:bold;">Price</h5></div>
+    <div class="col-lg-3"><h5 style="font-weight:bold;">Quantity</h5></div>
+    <div class="col-lg-3"><h5 style="font-weight:bold;margin-left: 10px;">Total Price</h5></div>
+</div>
+
+{% for cart in cart_items %}
+<div class="product_detail col-lg-12 d-flex">
+    <div class="col-lg-3 d-flex">
+        <div class="" style="width: 90px;">
+            <img src="{{ cart.variant.product.image.url }}" alt="">
+        </div>
+        <div class="ml-2">
+            <h6>{{ cart.variant.product.name }}</h6>
+            <span>Color:</span><span> {{ cart.variant.color }}</span><br>
+            <span>Size:</span><span> {{ cart.variant.size }}</span>
+        </div>
+    </div>
+    <div class="col-lg-3">$ {{ cart.variant.product.price }}</div>
+    <div class="col-lg-3 ml-4">{{ cart.quantity }}</div>
+    <div class="col-lg-3 ml-2">$ {{ cart.total_price }}</div>
+</div>
+
+<hr>
+{% endfor %}
+    <div class="col-lg-3 ml-auto">
+        <span>Sub Total</span><span style="margin-left: 40px;">$ {{ order_total }}</span><br>
+        {% comment %} <p>Shipping Fee         $ 120.00</p> {% endcomment %}
+        {% comment %} <p>Tax         $ 120.00</p> {% endcomment %}
+        <span>Discount</span><span style="margin-left: 44px;">$ {{ discount }}</span>
+        <hr>
+        <span>Total</span><span style="margin-left: 71px;font-weight:bold;">$ {{ razorpay_amount }}</span>
+        <hr>
+    </div>
+    <div class="btn_container mt-3 mb-5" style="padding: 20px;text-align: center;">
+        <!-- Payment Button -->
+        <button class="btn btn-primary" id="pay-btn">Make Payment</button>
+    </div>
+</div>
+
+<!-- Razorpay's Javascript code. -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  var options = {
+     
+    // Enter the Key ID generated from the Dashboard
+    key: "{{ razorpay_merchant_key }}",
+     
+    // Amount is in currency subunits.
+    // Default currency is INR. Hence,
+    // 50000 refers to 50000 paise
+    amount: "{{ razorpay_amount }}",
+    currency: "{{ currency }}",
+     
+    // Your/store name.
+    name: "Dj Razorpay",
+     
+    // Pass the `id` obtained in the response of Step 1
+    order_id: "{{ razorpay_order_id }}",
+    callback_url: "{{ callback_url }}",
+  };
+   
+  // initialise razorpay with the options.
+  var rzp1 = new Razorpay(options);
+   
+  // add event listener to the payment button.
+  document.getElementById("pay-btn").onclick = function (e) {
+    rzp1.open();
+    e.preventDefault();
+  };
+</script>
+
+
+
+
+    {% comment %} <!-- Razorpay's Javascript code. -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+	var options = {
+	
+        // Enter the Key ID generated from the Dashboard
+        key: "{{ razorpay_merchant_key }}",
+        
+        // Amount is in currency subunits.
+        // Default currency is INR. Hence,
+        // 50000 refers to 50000 paise
+        amount: "{{ razorpay_amount }}",
+        currency: "{{ currency }}",
+        "notes": { "address_id":"{{ address_id }}", "coupon_id": "{{ coupon.id }}",'test':123},
+        // Your/store name.
+        name: "Dj Razorpay",
+        
+        // Pass the `id` obtained in the response of Step 1
+        order_id: "{{ razorpay_order_id }}",
+        handler: function(response) {
+            console.log(response)
+            // Retrieve the payment ID from the response object
+            var paymentId = response.razorpay_name;
+            // Redirect to the success page with the payment ID as a parameter
+            window.location.href = '/place-order/paymenthandler/?address_id=' + response.notes.address_id;
+          },    
+    };
+	
+	// initialise razorpay with the options.
+	var rzp1 = new Razorpay(options);
+	
+	// add event listener to the payment button.
+	document.getElementById("pay-btn").onclick = function (e) {
+	rzp1.open();
+	e.preventDefault();
+	};
+</script> {% endcomment %}
+{% endblock content %}
+
+
+
+    

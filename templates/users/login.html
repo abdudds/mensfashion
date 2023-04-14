@@ -1,0 +1,54 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block link %}<link rel="stylesheet" href="{% static 'css/register.css' %}">{% endblock  %}
+{% block content %}
+ 
+<div class="section">
+	<div class="container-fluid">
+		<div class="row justify-content-center hero__items-login set-bg" data-setbg="{% static 'img/bg-login.webp' %}">
+			<div class="col-12 text-center align-self-center py-5">
+				<div class="section pb-5 pt-5 pt-sm-2 text-center">
+					<div class="card-3d-wrap mx-auto">
+						<div class="card-3d-wrapper">
+							<div class="card-front">
+								<div class="center-wrap">
+									<div class="section text-center">
+										<h4 class="mb-4 pb-3">Log In</h4>
+										<form action="" method="post">
+											{% csrf_token %}
+												
+											<div class="form-group">
+												{{ form.username }}
+												<i class="input-icon uil uil-at"></i>
+											</div>	
+											<div class="form-group mt-4">
+												{% comment %} <i class="fas fa-key me-3 fa-fw" style="font-size:30px;margin-right:10px; color:black;"></i> {% endcomment %}
+												{{ form.password }}
+												{% comment %} <i class="input-icon uil uil-lock-alt"></i> {% endcomment %}
+											</div>
+											
+											<div class="text-dark">
+												{% for fn,error in form.errors.items %}
+												{{ error }}
+											{% endfor %}
+											</div>
+											<button type="submit" class="btn mt-4">Login</button>
+											<p class="mb-0 mt-4 text-center text-dark"><a href="{% url 'password_reset' %}" class="link">Forgot your password?</a></p>
+											<p class="mb-0 mt-4 text-center"><a href="{% url 'register' %}" class="link text-primary">Don't have an account</a></p>
+										</form>
+								  </div>
+							  </div>
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
+	  </div>
+  </div>
+  
+{% endblock  %}
+
+{% block footer %}
+	
+{% endblock footer %}
+	

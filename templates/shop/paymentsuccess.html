@@ -1,0 +1,114 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="container ">
+    <div class="card mt-5 pt-1">
+        <div class="card-body">
+        <div class="container mb-5 mt-3">
+          <div class="row d-flex align-items-baseline">
+            <div class="col-xl-9">
+              <p style="color: #7e8d9f;font-size: 20px;">Invoice >> <strong>Order ID: {{order.order_no}}</strong></p>
+             
+            </div>
+            <hr>
+            <div>
+              <button class="btn btn-warning ml-left" id="printInvoice">Print</button>
+            </div>
+          </div>
+          <br><br>
+        
+          <div class="container">
+            <div class="col-md-12">
+              <div class="text-center">
+                <p class="pt-0"><h3><span style="color: #ff3368; font-weight: bold"> MensFashion Invoice</span> </h3></p>
+              </div>
+        
+            </div>
+        
+        
+            <div class="row">
+              <div class="col-xl-8 ">
+                <ul class="list-unstyled">
+                  <li class="text-muted"><h4>To:</h4> <span style="color:#5d9fc5 ;"><h5>{{order.user.first_name|title}} {{order.user.last_name|title}}</h5></span></li>
+                  <li class="text-muted"><h5>{{order.delivery_address.address}}</h5></li>
+                  <li class="text-muted"><h5>{{order.delivery_address.district}}</h5></li>
+                  <li class="text-muted"><h5>{{order.delivery_address.state}}</h5></li>
+                  <li class="text-muted"><h5>{{order.delivery_address.pincode}}</h5></li>
+                  <li class="text-muted"><h5><i class="fa fa-phone "></i> {{order.delivery_address.mobile}}</h5></li>
+                </ul>
+              </div>
+              <div class="col-xl-4">
+                <p class="text-muted"><h4>Invoice</p></h4>
+                <ul class="list-unstyled">
+                  <li class="text-muted"><i class="fa fa-circle" style="color:#40464c ;"></i> <span
+                    class="fw-bold">Payment Method: </span>{{ order.payment.payment_method|title }}</li>
+                  <li class="text-muted"><i class="fa fa-circle" style="color:#40464c  ;"></i> <span
+                      class="fw-bold">Payment ID: </span>{{ order.payment.payment_id }}</li>
+                  <li class="text-muted"><i class="fa fa-circle" style="color:#40464c  ;"></i> <span
+                      class="fw-bold">Creation Date: </span>{{order.order_date}}</li>
+                  <li class="text-muted"><i class="fa fa-circle" style="color:#40464c  ;"></i> <span
+                      class="me-1 fw-bold">Ordered From: </span>{{order.user.first_name|title}} {{order.user.last_name|title}}</li>
+                  <li class="text-muted"><i class="fa fa-circle" style="color:#40464c  ;"></i> <span
+                      class="me-1 fw-bold">Order Status: </span>{{order.status}}</li>
+                </ul>
+              </div>
+            </div>
+            <div class="row my-2 mx-1 justify-content-center">
+              <table class="table table-striped table-borderless">
+                <thead style="background-color: #828bb3;" class="text-white">
+                  <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col" class="text-center">Unit Price</th>
+                    <th scope="col" class="text-center">Quantity</th>
+                    <th scope="col" class="text-center">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                  <tr>
+                    <td>
+                      {{item.variant.product.name}}
+                      <p class="mb-0">Color: {{item.variant.color}}</p>
+                      <p class="mb-0">Size: {{item.variant.size}}</p>
+                    </td>
+                    <td class="text-center">₹ {{ item.variant.product.price}}</td>
+                    <td class="text-center">{{ item.quantity}}</td>
+                    <td class="text-center">₹ {{ item.total_price}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="row">
+              <div class="col-lg-4 ml-auto">
+                <h4>
+                    <ul class="list-unstyled ">
+                        <li class="ms-3"><h5><span class="text-black me-4 " >SubTotal: </span><span class="mx-5">₹ {{order.order_total}}</span></h5></li>
+                        <li class="ms-3"><h5><span class="text-black me-4"> Discount: </span><span class="mx-5">₹ {{order.discount}}</span></h5></li>
+                        <li class="ms-3"><h5><span class="text-black me-4"> Grand Total: </span><span class="mx-4">₹ {{order.payment.amount_paid}}</span></h5></li>
+                  </ul>
+                </h4>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-xl-12 justify-content-center d-flex">
+                <p><span style="color: #ff3368; font-weight: bold">Thank you for purchasing from us.</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        </div>
+      </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        
+<script>
+    document.getElementById("printInvoice").addEventListener("click", function() {
+        window.print();
+    });
+
+</script>
+
+{% endblock content %}

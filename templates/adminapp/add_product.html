@@ -1,0 +1,231 @@
+{% extends 'adminapp/base.html' %}
+
+
+{% block content %}
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row ">
+      <div class="col-12 grid-margin">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex mb-3">
+              <h3 class="card-title">Add Product</h3>
+              <a href="{% url 'products' %}" class="text-success ml-auto">Back</a>
+            </div>
+            <div class="table-responsive">
+              <form action="" method="post" enctype="multipart/form-data" id="variants_form">
+                  {% csrf_token %}
+                  <label class="mr-5">Name</label>
+                  <input type="text" name="product-name" value="{{ product.name }}" required><br>
+                  <textarea name="desc" id="" class="w-100 my-3" rows="10" placeholder="Description">{{ product.description }}</textarea>
+                  <div class="row">
+                    <div class="col-lg-6 col-md-12 mb-3">
+                      <div class="card border-white">
+                        <div class="card-body">
+                            <div class="d-flex mb-3">
+                              <label class="mr-4">Category</label>
+                              <select name="category" id="">
+                                {% if product %}
+                                <option value="{{ product.category }}">{{ product.category }}</option>
+                                {% endif %}
+                                 
+                                {% for category in categories %}
+                                {% if category.id != product.category.id %}
+                                  <option value="{{ category }}">{{ category }}</option>
+                                {% endif %}
+                                {% endfor %}
+                                  
+                              </select>
+                              <label class="add_product_sub_category">Sub Category</label>
+                              <select name="subcategory" id="">
+                                {% if product %}
+                                  <option value="{{ product.subcategory }}">{{ product.subcategory }}</option>
+                                {% endif %}
+                                  
+                                {% for subcategory in subcategorys %}
+                                {% if subcategory.id != product.subcategory.id %}
+                                  <option value="{{ subcategory }}">{{ subcategory }}</option>
+                                {% endif %}
+                                {% endfor %}
+                              </select>
+                            </div>
+                            <div class="d-flex mb-5">
+                              <label class="mr-5">Brand</label>
+                              <select name="brand" id="">
+                                {% if product %}
+                                <option value="{{ product.brand }}">{{ product.brand }}</option>
+                                {% endif %}
+                                 
+                                {% for brand in brands %}
+                                {% if brand.id != product.brand.id %}
+                                  <option value="{{ brand }}">{{ brand }}</option>
+                                {% endif %}
+                                {% endfor %}
+                              </select>
+                              <label class="add_product_price">Price</label>
+                              <input class="add_product_price_input" type="number" name="price" value="{{ product.price }}" placeholder="Inr" required><br>
+                            </div>
+                            <div class="d-flex my-2">
+                            <label class="mr-3">Thumb Image</label>
+                            <input type="file" name="image" value="{{ product.image.url }}">{{ product.image.url }}
+                            <div id="image-preview"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                      <div class="card border-white">
+                        <div class="card-body" id="image_holder">
+                          <label class="mr-3">Images</label>
+                          <input type="file" name="images" id="image" required multiple>
+                          <div id="image-preview"></div>
+                        </div>
+                        {% comment %} <button id="image_btn">+Add Image</button> {% endcomment %}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-12 mt-2">
+                    <h3 class="">Variants</h3>
+                    <div class="card border-white">
+                      <div class="card-body">
+                        {% if variants %}
+                          <table class="table">
+                            <thead>
+                              <tr>
+                                <th> Color </th>
+                                <th> Size </th>
+                                <th> Stock </th>
+                                <th> Delete </th>
+                              </tr>
+                            </thead>
+                            <tbody id="variants-holder">
+                              {% for variant in variants %}
+                                  <tr id="variant">
+                                    <td>
+                                      <select name="color" id="">
+                                        <option value="{{ variant.color }}">{{ variant.color }}</option>
+                                        {% for color in colors %}
+                                        {% if color != variant.color %}
+                                          <option value="{{ color }}">{{ color }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <select name="size" id="">
+                                        <option value="{{ variant.size }}">{{ variant.size }}</option>
+                                        {% for size in sizes %}
+                                        {% if size != variant.size %}
+                                          <option value="{{ size }}">{{ size }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                      </select>
+                                    </td>
+                                    <td>
+                                      <input class="add_product_price_input add_product_stock" type="number" name="stock" value="{{ variant.stock }}" onchange="preventNegative(this)" required>
+                                    </td>
+                                    <td><a href="{% url 'del_variant' variant.id %}"><i class="fas fa-trash text-danger"></i></a></td>
+                                  </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        {% else %}
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th> Color </th>
+                              <th> Size </th>
+                              <th> Stock </th>
+                              {% comment %} <th> Delete </th> {% endcomment %}
+                            </tr>
+                          </thead>
+                          <tbody id="variants-holder">
+                              <tr id="variant">
+                                <td>
+                                  <select name="color" id="">
+                                  {% for color in colors %}
+                                      <option value="{{ color }}">{{ color }}</option>
+                                  {% endfor %}
+                                  </select>
+                                </td>
+                                <td>
+                                  <select name="size" id="">
+                                  {% for size in sizes %}
+                                      <option value="{{ size }}">{{ size }}</option>
+                                  {% endfor %}
+                                  </select>
+                                </td>
+                                <td>
+                                  <input class="add_product_price_input add_product_stock" type="number" name="stock" value="" onchange="preventNegative(this)" required>
+                                </td>
+                                {% comment %} <td><a href="{% url 'del_variant' variant.id %}"><i class="fas fa-trash text-danger"></i></a></td> {% endcomment %}
+                              </tr>
+                          </tbody>
+                        </table>    
+                        {% endif %}
+                        <button id="variant_btn">+Add Variant</button>
+                        <script>
+                          var variants = document.querySelector('#variants-holder')
+                          var btn = document.querySelector('#variant_btn')
+                          var eleclone = document.querySelector('#variant').cloneNode(true)
+                          btn.addEventListener('click', (e)=>{
+                            var variant = eleclone.cloneNode(true)
+                            e.preventDefault()
+                            variants.append(variant)
+                          })
+                        </script>
+                      </div>
+                    </div>
+                  </div>
+                  {% if product %}
+                      <div class="" ><button id="submit-btn"  class="btn btn-success d-block ml-auto mr-5 my-5">Save Changes</button></div>
+                  {% else %}   
+                      <div class="d-flex">
+                        <p id="error-message" class="my-5 ml-3"></p>
+                        <button id="submit-btn" class="btn btn-success d-block ml-auto mr-5 my-5">Save</button>
+                      </div>
+                  {% endif %}
+              </form>
+              <script>
+
+                function preventNegative(stock) {
+                  if (stock.value < 1){
+                    stock.value = 1
+                  }
+                }
+                const variantsForm = document.querySelector('#variants_form')
+                const submit_btn = document.querySelector('#submit-btn') 
+                let ok = false
+
+                function check_valid(){
+                  const elements = document.querySelectorAll('.add_product_stock')
+                  let err = document.querySelector('#error-message')
+                  elements.forEach((stock) => {
+                    if(stock.value == ''){
+                      err.innerHTML = 'Please add stock'
+                    } else {
+                      ok = true
+                    }
+                  })
+
+                }
+                
+                submit_btn.addEventListener('click', (e) => {
+                  e.preventDefault()
+                  check_valid()
+                  console.log(ok)
+                  if (ok) {
+                    variantsForm.submit()
+                  }
+                })
+                
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div> 
+</div>  
+{% endblock content %}
+    

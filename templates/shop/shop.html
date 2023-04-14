@@ -1,0 +1,238 @@
+{% extends 'users/base.html' %}
+{% load static %}
+ 
+
+{% block content %}
+    
+<!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shop</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'users-home' %}">Home</a>
+                            <span>Shop</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shop Section Begin -->
+    <section style="margin:70px 0px;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="shop__sidebar">
+                        {% comment %} <div class="shop__sidebar__search">
+                            <form action="#">
+                                <input type="text" placeholder="Search...">
+                                <button type="submit"><span class="icon_search"></span></button>
+                            </form>
+                        </div> {% endcomment %}
+                        <div class="shop__sidebar__accordion">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__categories">
+                                                <ul class="">
+                                                    <li><a href="{% url 'shop' %}">All</a></li>
+                                                    {% for category in categorys %}
+                                                        
+                                                        {% if 'filterby' in request.build_absolute_uri and 'filterbycategory' not in request.build_absolute_uri %}
+                                                        <li><a href="{{ request.build_absolute_uri }}&filterbycategory={{ category.name}}">{{ category.name }}</a></li>
+
+                                                            {% else %}
+                                                            <li><a href="{{ request.path }}?filterbycategory={{ category.name}}">{{ category.name }}</a></li>
+
+                                                        {% endif %}
+                                                            
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseTwo">Brands</a>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__brand">
+                                                <ul>
+                                                    <li><a href="{% url 'shop' %}">All</a></li>
+                                                    {% for brand in brands %}
+                                                    {% if 'filterby' in request.build_absolute_uri and 'filterbybrand' not in request.build_absolute_uri %}
+
+                                                        <li><a href="{{ request.build_absolute_uri }}&filterbybrand={{ brand.name }}">{{ brand.name | title }}</a></li>
+                                                        {% else %}
+                                                        <li><a href="{{ request.path }}?filterbybrand={{ brand.name}}">{{ brand.name }}</a></li>
+                                                        {% endif %}
+                                                        {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseThree">Filter Price</a>
+                                    </div>
+                                    <div id="collapseThree" class="collapse show" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__price">
+                                                <ul>
+                                                    <li><a href="/shop/products/?lowtohigh=1">Low to high</a></li>
+                                                    <li><a href="/shop/products/?hightolow=1">High to low</a></li>
+                                                    
+                                                </ul> 
+                                            </div>
+                                       </div>
+                                    </div>    
+                                </div>   
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+                    <div class="shop__product__option">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="shop__product__option__left">
+                                    <p>Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} items</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+
+<!------------------ Product Section --------------->
+
+                    <div class="row">
+                        {% if searchproduct %}
+                            {% if searchproduct == 'noproduct' %}
+                                <h2 class="text-center">Product not available!</h2>
+                            {% else %}
+                                {% for product in searchproduct  %}
+                                    
+                                    {% if product.is_active == True %}
+                                    <div class="col-lg-4 col-md-6 col-sm-6">
+                                        <a href="{% url 'product' product.id %}">
+                                            <div class="product__item">
+                                                <div class="product__item__pic">
+                                                    <img style="width:260px;" src="{{ product.image.url }}" alt="img">
+                                                    <ul class="product__hover">
+                                                        <li><a href="{% url 'add_wishlist' product.id %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="product__item__text">
+                                                    <h6>{{ product.name }}</h6>
+                                                    {% comment %} <a href="{% url 'add_cart' product.id %}" class="add-cart">+ Add To Cart</a> {% endcomment %}
+                                                    <!-- <div class="rating">
+                                                        <i class="fa fa-star-o"></i>
+                                                        <i class="fa fa-star-o"></i>
+                                                        <i class="fa fa-star-o"></i>
+                                                        <i class="fa fa-star-o"></i>
+                                                        <i class="fa fa-star-o"></i>
+                                                    </div> -->
+                                                    <h5>$ {{ product.price }}</h5>
+                                                    
+                                                  
+                                                        
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}   
+                            {% for product in products  %}
+                                {% if product.is_active == True %}
+                                <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <a href="{% url 'product' product.id %}">
+                                        <div class="product__item">
+                                            <div class="product__item__pic">
+                                                <img src="{{ product.image.url }}" alt="img">
+                                                <ul class="product__hover">
+                                                    <li><a href="{% url 'add_wishlist' product.id %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="product__item__text">
+                                                <h6>{{ product.brand }}</h6>
+                                                <h6>{{ product.name }}</h6>
+                                                {% comment %} <a href="{% url 'add_cart' product.id %}" class="add-cart">+ Add To Cart</a> {% endcomment %}
+                                                <!-- <div class="rating">
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                    <i class="fa fa-star-o"></i>
+                                                </div> -->
+                                                <h5>$ {{ product.price }}</h5>
+                                                
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    {% comment %} <div class="row">
+                        <div class="col-lg-12">
+                            <div class="product__pagination">
+                                <a class="active" href="#">1</a>
+                                <a href="#">2</a>
+                                <a href="#">3</a>
+                                <span>...</span>
+                                <a href="#">21</a>
+                            </div>
+                        </div>
+                    </div> {% endcomment %}
+
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                                <a href="?page=1"> <i class="fa-solid fa-angles-left"></i></a>
+                                <a href="?page={{ page_obj.previous_page_number }}"> <i class="fa-solid fa-angle-left"></i></a>
+                            {% endif %}
+                    
+                            <span class="current-page">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                            </span>
+                    
+                            {% if page_obj.has_next %}
+                                <a href="?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}"><i class="fa-solid fa-angles-right"></i></a>
+                            {% endif %}
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section End -->
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    <script>
+        alertify.set('notifier','position', 'top-right');
+        {% for msg in messages %}
+            alertify.success('{{ msg }}');
+        {% endfor %}
+   </script>
+{% endblock content %}
+
+  

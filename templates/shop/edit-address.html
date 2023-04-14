@@ -1,0 +1,93 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <!-- Breadcrumb Section Begin -->
+    {% comment %} <section class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Manage Addresses</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'users-home' %}">Home</a>
+                            <a href="{% url 'user-profile' user.id %}">Profile</a>
+                            <a href="{% url 'manage-address' user.id %}">Manage-Address</a>
+                            <span>Add Address</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> {% endcomment %}
+    <!-- Breadcrumb Section End -->
+
+    <!-- Address Section Begin -->
+
+    <section class="checkout spad">
+        <div class="container">
+            <div class="checkout__form">
+                <form  method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-12">
+                            {% comment %} <h6 class="checkout__title">Billing Details</h6> {% endcomment %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="checkout__input">
+                                        <p>Name<span>*</span></p>
+                                        {{ form.first_name }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout__input">
+                                <p>Address<span>*</span></p>
+                                {{ form.address }}
+                            </div>
+                            <div class="row mb-3">
+                                <div class="checkout__input col-lg-6">
+                                    <p>District<span>*</span></p>
+                                    {{ form.district }}
+                                </div>
+                                <div class="checkout__input col-lg-6">
+                                    <p>State<span>*</span></p>
+                                    
+                                    {{ form.state }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="checkout__input col-lg-6">
+                                    <p>Pincode<span>*</span></p>
+                                    {{ form.pincode }}
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <div class="checkout__input">
+                                        <p>Mobile<span>*</span></p>
+                                        {{ form.mobile }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-sm-6">
+                                    <div class="continue__btn">
+                                        <button class='btn btn-primary' type="submit">Add Address</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock content %}
+
+
+{% block footer %}
+    
+{% endblock footer %}
+    
