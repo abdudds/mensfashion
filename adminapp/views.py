@@ -39,10 +39,16 @@ def super_user_required(view_func):
 class DashboardView(PermissionRequiredMixin, TemplateView): 
     template_name = 'adminapp/index.html'
     permission_required = 'is_superuser'
-    user_count = User.objects.all().count()
-    order_count = Order.objects.all().count()
-    todays_order = Order.objects.filter(order_date=date.today()).count()
 
+    
+    try:
+        user_count = User.objects.all().count()
+        order_count = Order.objects.all().count()
+        todays_order = Order.objects.filter(order_date=date.today()).count()
+    except:
+        user_count = 0
+        order_count = 0
+        todays_order = 0
     
     try:
         todays_income = round(Payment.objects.filter(created_at=date.today()).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)

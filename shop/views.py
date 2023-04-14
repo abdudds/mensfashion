@@ -70,7 +70,6 @@ class ProductView(DetailView):
         images = ProductImage.objects.filter(product = self.object)[:4]
         variants = Variant.objects.filter(product = self.object)
         total_stock = variants.aggregate(Sum('stock'))['stock__sum']
-
         colors = set()
         for variant in variants:
             colors.add(variant.color)
@@ -86,7 +85,8 @@ class ProductView(DetailView):
         context['total_stock'] = total_stock
         reviews = Review.objects.filter(product = self.object)
         context['reviews'] = reviews
-
+        review = Review.objects.filter(user=self.request.user, product=self.object).first()
+        context['review'] = review
            
         try:
             avg_rating = round(reviews.aggregate(Avg('rating'))['rating__avg'], 1)
@@ -118,7 +118,6 @@ class ProductView(DetailView):
             if rating == 'None':
                 return redirect('product')    
             product = Product.objects.get(id=kwargs['pk'])
-            print(request.user)
             Review.objects.create(user=request.user, product=product, rating = rating, user_review = review_body, title = title)
 
             return self.get(request)
@@ -488,7 +487,6 @@ def paymenthandler(request):
             cart_items.delete()
             order = Order.objects.get(payment=payment.id)
             order_no = order.order_no
-            print(order_no, '\n\n\n')
             # verify the payment signature.
             result = razorpay_client.utility.verify_payment_signature(params_dict)
             
@@ -548,7 +546,6 @@ def view_order(request, order_no):
     return render(request, 'shop/vieworder.html', context)
 
 def cancelOrder(request, id):
-    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     client = razorpay.Client(auth=("rzp_test_a08czAcvdoxBL5", "gpesereRmTOMwbSbmgP80KrY"))
     order = Order.objects.get(id=id, user=request.user)
     payment = order.payment
@@ -556,11 +553,8 @@ def cancelOrder(request, id):
 
     if payment.payment_method == 'razorpay':
         payment_id = payment.payment_id
-        print(payment_id)
         amount = payment.amount_paid
         amount = int(amount * 100)
-        print(amount)
-        print('###########')
         
         if payment.paid:
             refund_data = {
@@ -580,7 +574,6 @@ def cancelOrder(request, id):
             return render(request, 'shop/vieworder.html', context)
 
         refund = client.payment.refund(payment_id, refund_data)
-        print(refund)
 
         if refund is not None:
             current_user = request.user
