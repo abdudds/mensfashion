@@ -2,64 +2,6 @@
 
 
 {% block content %}
-{% comment %} <!-- <div class="main-panel">
-  <div class="content-wrapper">
-    <div class="row ">
-      <div class="col-12 grid-margin">
-        <div class="card">
-          <div class="card-body">
-            <div class="text-center d-flex">
-              <h3 class="card-title">Order List</h3>
-            </div>
-            <div class="table-responsive">
-
-              {% if orders %}
-
-
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th> Sl.No </th>
-                    <th> Order No </th>
-                    <th> Order Date </th>
-                    <th> Order Status </th>
-                    <th> Total Amount </th>
-                    <th> Action </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for i in page_obj %}
-                  <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td> {{ i.order_no }} </td>
-                    <td> {{ i.order_date }} </td>
-                    <td> {{ i.status }} </td>
-                    <td> {{ i.payment.amount_paid }} </td>
-                    
-                    <td>
-                      {% if i.status == 'Delivered' %}
-                      <label class="badge badge-success">Delivered</label>
-                      {% elif i.status == 'Cancelled' %}
-                      <label class="badge badge-danger">Cancelled</label>
-                      {% elif i.status == 'Returned' %}
-                      <label class="badge badge-warning">Returned</label>
-                      {%else%}
-                      <label class="badge badge-info p-2" type="button" data-bs-toggle="modal"
-                        data-bs-target="#myModal{{i.id}}" id="Modal_button"
-                        style="  border: 1px solid red;">Change</button>
-                        {%endif%}
-                    </td>
-                  </tr>
-
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> --> {% endcomment %}
 
 <div class="main-panel">
   <div class="content-wrapper">
@@ -70,7 +12,7 @@
             <h3 class="p-2 mb-3" style="border-bottom: 2px solid orange;">Manage Order</h3>
             <div class="container-fluid">
               {% if orders %}
-              <table class="table table table-responsive">
+              <table class="table table table-responsive-md">
                 <thead>
                   <tr>
                     

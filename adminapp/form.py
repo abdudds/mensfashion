@@ -2,6 +2,7 @@ from django import forms
 from shop.form import *
 
 class CouponForm(forms.ModelForm):
+    active = forms.BooleanField(widget=forms.CheckboxInput(attrs={'style': 'margin-left: 70px;'}))
     class Meta:
         model = Coupon
         fields = ['code', 'discount', 'min_value', 'max_value', 'valid_from', 'valid_to', 'active']

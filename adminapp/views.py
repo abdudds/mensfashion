@@ -45,13 +45,15 @@ class DashboardView(PermissionRequiredMixin, TemplateView):
         user_count = User.objects.all().count()
         order_count = Order.objects.all().count()
         todays_order = Order.objects.filter(order_date=date.today()).count()
+        todays_income = round(Payment.objects.filter(created_at=date.today()).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
+
     except:
         user_count = 0
         order_count = 0
         todays_order = 0
+        todays_income = 0
     
     try:
-        todays_income = round(Payment.objects.filter(created_at=date.today()).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
         cod_income = round(Payment.objects.filter(payment_method='cash on delivery', paid=True).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
         cod_pending = round(Payment.objects.filter(payment_method='cash on delivery').aggregate(Sum('amount_paid'))['amount_paid__sum'],2) - cod_income
         payments = Payment.objects.all()
@@ -62,7 +64,6 @@ class DashboardView(PermissionRequiredMixin, TemplateView):
         razor_percent = round(razor_income*100/total_sale, 2)
     
     except:
-        todays_income = 0
         cod_income = 0
         cod_pending = 0
         payments = None
@@ -264,15 +265,19 @@ def product(request):
         'searchproduct': searchproduct,
     }
     return render(request, 'adminapp/product.html', context)
-
+from shop.models import COLOR_CHOICES, SIZE_CHOICES
 @super_user_required
 def add_product(request):
     brands = Brand.objects.filter(is_active=True)
     subcategorys = SubCategory.objects.filter(is_active=True)
     categories = Category.objects.filter(is_active=True)
     # variants = Variant.objects.all()
-    colors = Variant.objects.values_list('color', flat=True).distinct()
-    sizes = Variant.objects.values_list('size', flat=True).distinct()
+    # colors = Variant.objects.values_list('color', flat=True).distinct()
+    # sizes = Variant.objects.values_list('size', flat=True).distinct()
+    colors = COLOR_CHOICES
+    sizes = SIZE_CHOICES
+    for color in colors:
+        print(color[0], '++++++====================================')
     context = {
         'brands': brands, 
         'subcategorys': subcategorys, 
@@ -291,7 +296,9 @@ def add_product(request):
         try:
             thump_image = request.FILES['image']
         except:
-            pass
+            messages.error(request, 'Please add image')
+            return redirect('add_product')
+        
         images = request.POST.getlist('images')
         color = request.POST.getlist('color')
         size = request.POST.getlist('size')
@@ -320,8 +327,10 @@ def edit_product(request, product_id):
     subcategorys = SubCategory.objects.filter(is_active=True)
     categories = Category.objects.filter(is_active=True)
     variants = Variant.objects.filter(product=product)
-    colors = Variant.objects.values_list('color', flat=True).distinct()
-    sizes = Variant.objects.values_list('size', flat=True).distinct()
+    # colors = Variant.objects.values_list('color', flat=True).distinct()
+    # sizes = Variant.objects.values_list('size', flat=True).distinct()
+    colors = COLOR_CHOICES
+    sizes = SIZE_CHOICES
     images = ProductImage.objects.filter(product=product)
 
     context = {
@@ -342,11 +351,15 @@ def edit_product(request, product_id):
         subcategory = SubCategory.objects.get(name=request.POST['subcategory'])
         brand = Brand.objects.get(name=request.POST['brand'])
         price = request.POST['price']
-        thump_image = request.FILES['image']
         images = request.POST.getlist('images')
         colors = request.POST.getlist('color')
         sizes = request.POST.getlist('size')
         stocks = request.POST.getlist('stock')
+
+        try:
+            thump_image = request.FILES['image']
+        except:
+            thump_image = product.image
 
         product.name = name
         product.description = description
@@ -374,6 +387,16 @@ def edit_product(request, product_id):
         return redirect('products')
     else:
         return render(request, 'adminapp/add_product.html', context)
+
+@super_user_required
+def del_image(request, image_id):
+    try:
+        image = ProductImage.objects.get(id=image_id)
+        image.delete()
+    except:
+        pass
+
+    return redirect('edit_product', image.product.id)
 
 @super_user_required
 def del_product(request, product_id):

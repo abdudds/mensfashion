@@ -7,6 +7,7 @@ from users.models import Address
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count, Avg
 from django.contrib import messages
+from datetime import date
 from django.http import JsonResponse
 
 
@@ -85,14 +86,17 @@ class ProductView(DetailView):
         context['total_stock'] = total_stock
         reviews = Review.objects.filter(product = self.object)
         context['reviews'] = reviews
-        review = Review.objects.filter(user=self.request.user, product=self.object).first()
-        context['review'] = review
            
         try:
             avg_rating = round(reviews.aggregate(Avg('rating'))['rating__avg'], 1)
+            review = Review.objects.filter(user=self.request.user, product=self.object)
+
         except:
             avg_rating = 0
+            review = None
         context['avg_rating'] = avg_rating
+        context['review'] = review
+        
         return context
     
     def post(self, request, *args, **kwargs):
@@ -287,12 +291,18 @@ def checkout_view(request,**kwargs):
     addresses = Address.objects.filter(user = request.user)
     cart_item = CartItem.objects.filter(user =request.user)
     coupons = Coupon.objects.filter()
+    total = cart_item.aggregate(Sum('total_price'))['total_price__sum']
 
-    if not cart_item:
-        msg = 'Please add items to cart'
+    for coupon in coupons:
+        if coupon.valid_to.date() < date.today():
+            coupon.active = False
+            coupon.save()
+
+    if not cart_item or total == 0:
+        messages.error(request, 'Cart is empty, Please add items to cart')
         return redirect('shop')
 
-    total = cart_item.aggregate(Sum('total_price'))['total_price__sum']
+    
     sub_total = total - discount
     context = {'addresses': addresses, 'cart_item': cart_item, 'total': total, 'coupons': coupons,'discount':discount,'sub_total':sub_total}
 

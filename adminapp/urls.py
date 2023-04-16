@@ -30,6 +30,7 @@ urlpatterns = [
     path('add-product/', add_product, name='add_product'),
     path('edit-product/<product_id>', edit_product, name='edit_product'),
     path('del-product/<product_id>', del_product, name='del_product'),
+    path('del-image/<image_id>', del_image, name='del_image'),
     path('del-variant/<variant_id>', del_variant, name='del_variant'),
 
     path('orders/', admin_order, name='orders'),

@@ -124,13 +124,12 @@
                                 <h2 class="text-center">Product not available!</h2>
                             {% else %}
                                 {% for product in searchproduct  %}
-                                    
                                     {% if product.is_active == True %}
-                                    <div class="col-lg-4 col-md-6 col-sm-6">
+                                    <div class="col-lg-4 col-md-6 col-sm-6 d-flex justify-content-center">
                                         <a href="{% url 'product' product.id %}">
                                             <div class="product__item">
                                                 <div class="product__item__pic">
-                                                    <img style="width:260px;" src="{{ product.image.url }}" alt="img">
+                                                    <img src="{{ product.image.url }}" alt="img">
                                                     <ul class="product__hover">
                                                         <li><a href="{% url 'add_wishlist' product.id %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
                                                     </ul>
@@ -146,9 +145,6 @@
                                                         <i class="fa fa-star-o"></i>
                                                     </div> -->
                                                     <h5>$ {{ product.price }}</h5>
-                                                    
-                                                  
-                                                        
                                                 </div>
                                             </div>
                                         </a>
@@ -159,16 +155,16 @@
                         {% else %}   
                             {% for product in products  %}
                                 {% if product.is_active == True %}
-                                <div class="col-lg-4 col-md-6 col-sm-6">
-                                    <a href="{% url 'product' product.id %}">
+                                <a href="{% url 'product' product.id %}">
+                                    <div class="col-lg-4 col-md-6 col-sm-6 d-flex justify-content-center" >
                                         <div class="product__item">
                                             <div class="product__item__pic">
-                                                <img src="{{ product.image.url }}" alt="img">
+                                                <img class="shop_image" src="{{ product.image.url }}" alt="img">
                                                 <ul class="product__hover">
                                                     <li><a href="{% url 'add_wishlist' product.id %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a></li>
                                                 </ul>
                                             </div>
-                                            <div class="product__item__text">
+                                            <div class="product__item__text product__item_text">
                                                 <h6>{{ product.brand }}</h6>
                                                 <h6>{{ product.name }}</h6>
                                                 {% comment %} <a href="{% url 'add_cart' product.id %}" class="add-cart">+ Add To Cart</a> {% endcomment %}
@@ -180,27 +176,14 @@
                                                     <i class="fa fa-star-o"></i>
                                                 </div> -->
                                                 <h5>$ {{ product.price }}</h5>
-                                                
                                             </div>
                                         </div>
-                                    </a>
-                                </div>
+                                    </div>
+                                </a>
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
                     </div>
-
-                    {% comment %} <div class="row">
-                        <div class="col-lg-12">
-                            <div class="product__pagination">
-                                <a class="active" href="#">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <span>...</span>
-                                <a href="#">21</a>
-                            </div>
-                        </div>
-                    </div> {% endcomment %}
 
                     <div class="pagination">
                         <span class="step-links">
@@ -219,7 +202,6 @@
                             {% endif %}
                         </span>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -230,7 +212,11 @@
     <script>
         alertify.set('notifier','position', 'top-right');
         {% for msg in messages %}
+        {% if msg.tags == success %}
             alertify.success('{{ msg }}');
+            {% else %}
+            alertify.error('{{ msg }}');  
+            {% endif %}
         {% endfor %}
    </script>
 {% endblock content %}

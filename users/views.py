@@ -56,7 +56,8 @@ class UserLoginView(LoginView):
 class UserRegisterView(generic.CreateView):
     form_class = UserRegisterForm
     template_name = "users/register.html"
-    extra_context = {'title': 'register'}
+    message = 'Please check your mail and verify the email'
+    extra_context = {'title': 'register', 'message': message}
     success_url = reverse_lazy('login')
 
     def form_valid(self, form):

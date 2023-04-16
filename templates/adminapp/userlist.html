@@ -16,54 +16,55 @@
                 
             <div class="container-fluid">
                 {% if users %}
-                <table class="table table-responsive w-100" style="display: table;">
-                <thead>
-                    <tr>
-                    <th scope="col">Sl No</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Mobile</th>
-                    <th scope="col">action</th>
-                    </tr>
-                </thead>
-                <tbody id="myTable">
-                    
-                    {% if searchuser %}
-                    {% for i in users %}
-                    <tr>
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{i.first_name|title}} {{i.last_name|title}}</td>
-                    <td>{{i.email}}</td>
-                    <td>{{i.mobile}}</td>
-                    <td>
-                        {% if i.is_blocked == False %}
-                        <a href="{% url 'user_block' i.id  %}" class="btn btn-danger">Block</a>
-                        {%else%}
-                        <a href="{% url 'user_block' i.id %}" class="btn btn-success">Unblock</a>
-                        {% endif %}
-                    </td>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
+                <table class="table table-responsive-md">
+                    <thead>
+                        <tr>
+                        <th scope="col">Sl No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
                         
-                    {% for i in page_obj %}
-                    <tr>
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{i.first_name|title}} {{i.last_name|title}}</td>
-                    <td>{{i.email}}</td>
-                    <td>{{i.mobile}}</td>
-                    <td>
-                        {% if i.is_blocked == False %}
-                        <a href="{% url 'user_block' i.id  %}" class="btn btn-danger">Block</a>
-                        {%else%}
-                        <a href="{% url 'user_block' i.id %}" class="btn btn-success">Unblock</a>
+                        {% if searchuser %}
+                        {% for i in users %}
+                        <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{i.first_name|title}} {{i.last_name|title}}</td>
+                        <td>{{i.email}}</td>
+                        <td>{{i.mobile}}</td>
+                        <td>
+                            {% if i.is_blocked == False %}
+                            <a href="{% url 'user_block' i.id  %}" class="btn btn-danger">Block</a>
+                            {%else%}
+                            <a href="{% url 'user_block' i.id %}" class="btn btn-success">Unblock</a>
+                            {% endif %}
+                        </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                            
+                        {% for i in page_obj %}
+                        <tr>
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{i.first_name|title}} {{i.last_name|title}}</td>
+                        <td>{{i.email}}</td>
+                        <td>{{i.mobile}}</td>
+                        <td>
+                            {% if i.is_blocked == False %}
+                            <a href="{% url 'user_block' i.id  %}" class="btn btn-danger">Block</a>
+                            {%else%}
+                            <a href="{% url 'user_block' i.id %}" class="btn btn-success">Unblock</a>
+                            {% endif %}
+                        </td>
+                        </tr>
+                        {% endfor %}
                         {% endif %}
-                    </td>
-                    </tr>
-                    {% endfor %}
-                    {% endif %}
-                </tbody>
+                    </tbody>
                 </table>
+                
             </div>
             {% else %}
             <h4 class="text-center">No records</h4>

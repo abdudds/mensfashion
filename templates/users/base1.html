@@ -38,77 +38,100 @@
       <div class="loader"></div>
   </div>
 
-   <!-- Offcanvas Menu Begin -->
-   <div class="offcanvas-menu-overlay"></div>
-   <div class="offcanvas-menu-wrapper">
-       
-       <div id="mobile-menu-wrap"></div>
-       <div class="offcanvas__text">
-           <p>Free shipping, 30-day return or refund guarantee.</p>
-       </div>
-   </div>
-   <!-- Offcanvas Menu End -->
+  <!-- Offcanvas Menu Begin -->
+  <div class="offcanvas-menu-overlay"></div>
+  <div class="offcanvas-menu-wrapper">
+      <div class="offcanvas__option">
+          <div class="offcanvas__links">
+              <a href="#">Sign in</a>
+              <a href="#">FAQs</a>
+          </div>
+      </div>
+      <div class="offcanvas__nav__option">
+          <a href="#" class="search-switch"><img src="{% static 'img/icon/search.png' %}" alt=""></a>
+          <a href="#"><img src="{% static 'img/icon/heart.png' %}" alt=""></a>
+          <a href="#"><img src="{% static 'img/icon/cart.png' %}" alt=""> <span>0</span></a>
+      </div>
+      <div id="mobile-menu-wrap"></div>
+      <div class="offcanvas__text">
+          <p>Free shipping, 30-day return or refund guarantee.</p>
+      </div>
+  </div>
+  <!-- Offcanvas Menu End -->
 
-   <!-- Header Section Begin -->
-   <header class="header">
-       
-       <div class="container">
-           <div class="row">
-               <div class="">
-                   <div class="header__logo">
-                       <a href="{% url 'users-home' %}"><img src="{% static 'img/logo_-removebg-preview.png' %}" alt=""></a>
-                   </div>
-               </div>
-               <div class="ml-5 toggle-head">
-                   <nav class="header__menu mobile-menu">
-                       <ul>
-                           <li class="active"><a href="{% url 'users-home' %}">Home</a></li>
-                           <li><a href="{% url 'shop' %}">Shop</a></li>
-                           <li><a href="#">About Us</a></li>
-                           <li><a href="#">Contact Us</a></li>
-                           <li>
-                                <form action="{% url 'search-products' %}" method="post" class=""  id="product-search">
-                                    {% csrf_token %}
-                                    <input type="search" name="search" placeholder='Search'>
-                                    <button type="submit"><img src="{% static 'img/icon/search.png' %}" alt=""></button>
-                                </form>
+    <!-- Header Section Begin -->
+    <header class="header header-mobile">
+      
+      <div class="container">
+          <div class="row" style="justify-content: space-between;">
+              <div class="">
+                  <div class="header__logo">
+                      <a href="{% url 'users-home' %}"><img src="{% static 'img/logo_-removebg-preview.png' %}" alt=""></a>
+                  </div>
+              </div>
+              <div class="">
+                  <nav class="header__menu mobile-menu">    
+                    <ul>
+                          <li class="active"><a href="{% url 'users-home' %}">Home<span class="sr-only">(current)</span></a></li>
+                          <li><a href="{% url 'shop' %}">Shop</a></li>
+                          <li><a href="#">About Us</a></li>
+                          <li><a href="">Contacts</a></li>
+                          <li>
+                            <button id="search"><img src="{% static 'img/icon/search.png' %}" alt=""></button>
+                            
+                            <form action="{% url 'search-products' %}" method="post" class="d-none"  id="product-search">
+                                {% csrf_token %}
+                                <input type="search" name="search">
+                                <button type="submit"><img src="{% static 'img/icon/search.png' %}" alt=""></button>
+                              </form>
+                              <script>
+                                var btn = document.getElementById('search')
+                                var frm = document.getElementById('product-search')
+
+                                btn.addEventListener('click', (e) => {
+                                    e.preventDefault()
+                                    frm.classList.remove('d-none')
+                                    console.log('clicked')
+                                    btn.classList.add('d-none')
+                                })
+                            </script>
                           </li>
-                        </ul>
-                   </nav>
-               </div>
-               <div class="ml-5 toggle-head">
-                <div class="header__nav__option d-flex mt-2">
+                      </ul>
+                  </nav>
+              </div>
+              <div class="col-lg-3 col-md-3">
+                  <div class="header__nav__option d-flex mt-2">
                         
-                    {% if user.is_authenticated %}
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right:25px; background-color: gainsboro;">
-                            {{ user.first_name }}
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        {% if not user.is_superuser %}
-                        <a class="dropdown-item" href="{% url 'user-profile' user.id %}">Profile</a>
-                        <a class="dropdown-item" href="{% url 'userorder' %}">Your Orders</a>
-                        {% elif user.is_superuser %}
-                            {% comment %} <a class="dropdown-item" href="">Profile</a> {% endcomment %}
-                            <a class="dropdown-item" href="{% url 'dashboard' %}">Admin Dashboard</a>
-                        {% endif %}
-                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-right:25px;">
+                                {{ user.first_name }}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% if not user.is_superuser %}
+                            <a class="dropdown-item" href="{% url 'user-profile' user.id %}">Profile</a>
+                            <a class="dropdown-item" href="{% url 'userorder' %}">Your Orders</a>
+                            {% elif user.is_superuser %}
+                                {% comment %} <a class="dropdown-item" href="">Profile</a> {% endcomment %}
+                                <a class="dropdown-item" href="{% url 'dashboard' %}">Admin Dashboard</a>
+                            {% endif %}
+                            <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                            </div>
                         </div>
+                        {% else %}
+                        <a class="text-primary" style="margin-right:5px;" href="{% url 'login' %}" class="">Login |</a>
+                        <a class="text-primary" href="{% url 'register' %}" class=""> Register</a>
+                        {% endif %}
+                        <a href="{% url 'wishlist' %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a>
+                        <a href="{% url 'view_cart' %}"><img src="{% static 'img/icon/cart.png' %}" alt=""> <span></span></a>
+                 
                     </div>
-                    {% else %}
-                    <a class="text-primary" style="margin-right:5px;" href="{% url 'login' %}" class="">Login |</a>
-                    <a class="text-primary" href="{% url 'register' %}" class=""> Register</a>
-                    {% endif %}
-                    <a href="{% url 'wishlist' %}"><img src="{% static 'img/icon/heart.png' %}" alt=""></a>
-                    <a href="{% url 'view_cart' %}"><img src="{% static 'img/icon/cart.png' %}" alt=""> <span></span></a>
-             
-                </div>
-               </div>
-           </div>
-           <div class="canvas__open"><i class="fa fa-bars"></i></div>
-       </div>
-   </header>
-   <!-- Header Section End -->
+              </div>
+          </div>
+          {% comment %} <div class="canvas__open"><i class="fa fa-bars"></i></div> {% endcomment %}
+      </div>
+    </header>
+    <!-- Header Section End -->
     
     {% block content %}
       
