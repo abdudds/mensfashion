@@ -63,12 +63,11 @@
                                 
                                 {% if coupon.active %}
                                 <div class="coupon mb-3">
-                                    <input onclick="sendAjax(this)" type="radio" name="coupon" value="{{coupon.id}}" id="{{coupon.id}}">
-                                    <label for="{{coupon.id}}">{{ coupon.discount }}% instant discount up to ₹{{ coupon.max_value }}, on orders of ₹{{ coupon.min_value }} and above.</label>
+                                    <input onclick="sendAjax(this)" type="radio" name="coupon" value="{{coupon.id}}" id="{{coupon.code}}">
+                                    <label for="{{coupon.code}}">{{ coupon.discount }}% instant discount up to ₹{{ coupon.max_value }}, on orders of ₹{{ coupon.min_value }} and above.</label>
                                 </div>
                                 {% endif %}
                                 {% endfor %}
-                                {% comment %} <a id="coupon_url" class="ml-auto mr-3 mt-2 btn btn-dark text-light" style="display:block;width: fit-content;">Apply Coupon</a> {% endcomment %}
                                 
                                 <script>
 
@@ -86,7 +85,6 @@
                                                     icon: 'error',
                                                     title: 'Oops...',
                                                     text: result.message,
-                                                    
                                                   })
                                             }
                                             else{
