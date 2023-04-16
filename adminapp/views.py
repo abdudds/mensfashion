@@ -265,19 +265,16 @@ def product(request):
         'searchproduct': searchproduct,
     }
     return render(request, 'adminapp/product.html', context)
-from shop.models import COLOR_CHOICES, SIZE_CHOICES
+
 @super_user_required
 def add_product(request):
     brands = Brand.objects.filter(is_active=True)
     subcategorys = SubCategory.objects.filter(is_active=True)
     categories = Category.objects.filter(is_active=True)
-    # variants = Variant.objects.all()
-    # colors = Variant.objects.values_list('color', flat=True).distinct()
-    # sizes = Variant.objects.values_list('size', flat=True).distinct()
+    
     colors = COLOR_CHOICES
     sizes = SIZE_CHOICES
-    for color in colors:
-        print(color[0], '++++++====================================')
+    
     context = {
         'brands': brands, 
         'subcategorys': subcategorys, 
@@ -299,8 +296,9 @@ def add_product(request):
             messages.error(request, 'Please add image')
             return redirect('add_product')
         
-        images = request.POST.getlist('images')
+        images = request.FILES.getlist('images')
         color = request.POST.getlist('color')
+        print(images, '+++++++++++++++++++======================', color)
         size = request.POST.getlist('size')
         stock = request.POST.getlist('stock')
 
@@ -351,8 +349,9 @@ def edit_product(request, product_id):
         subcategory = SubCategory.objects.get(name=request.POST['subcategory'])
         brand = Brand.objects.get(name=request.POST['brand'])
         price = request.POST['price']
-        images = request.POST.getlist('images')
+        images = request.FILES.getlist('images')
         colors = request.POST.getlist('color')
+        print(images, '+++++++++++++++++++======================', colors)
         sizes = request.POST.getlist('size')
         stocks = request.POST.getlist('stock')
 
@@ -384,6 +383,10 @@ def edit_product(request, product_id):
                 variant = Variant.objects.filter(product=product, color=color, size=size).first()
                 variant.stock = stock
                 variant.save()
+
+        for image in images:    
+            ProductImage.objects.create(product=product, image=image)
+
         return redirect('products')
     else:
         return render(request, 'adminapp/add_product.html', context)
