@@ -1643,6 +1643,11 @@ ol {
 .product__details__pic__item {
 	position: relative;
 }
+.product__details__pic__item > img{
+	height: 460px;
+	width: 360px;
+
+}
 
 .product__details__pic__item a {
 	height: 56px;
