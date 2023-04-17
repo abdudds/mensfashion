@@ -42,18 +42,18 @@ class DashboardView(PermissionRequiredMixin, TemplateView):
 
     
     try:
-        user_count = User.objects.all().count()
-        order_count = Order.objects.all().count()
+        
         todays_order = Order.objects.filter(order_date=date.today()).count()
         todays_income = round(Payment.objects.filter(created_at=date.today()).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
 
     except:
-        user_count = 0
-        order_count = 0
+        
         todays_order = 0
         todays_income = 0
     
     try:
+        user_count = User.objects.all().count()
+        order_count = Order.objects.all().count()
         cod_income = round(Payment.objects.filter(payment_method='cash on delivery', paid=True).aggregate(Sum('amount_paid'))['amount_paid__sum'],2)
         cod_pending = round(Payment.objects.filter(payment_method='cash on delivery').aggregate(Sum('amount_paid'))['amount_paid__sum'],2) - cod_income
         payments = Payment.objects.all()
@@ -64,6 +64,8 @@ class DashboardView(PermissionRequiredMixin, TemplateView):
         razor_percent = round(razor_income*100/total_sale, 2)
     
     except:
+        user_count = 0
+        order_count = 0
         cod_income = 0
         cod_pending = 0
         payments = None
@@ -351,7 +353,6 @@ def edit_product(request, product_id):
         price = request.POST['price']
         images = request.FILES.getlist('images')
         colors = request.POST.getlist('color')
-        print(images, '+++++++++++++++++++======================', colors)
         sizes = request.POST.getlist('size')
         stocks = request.POST.getlist('stock')
 
