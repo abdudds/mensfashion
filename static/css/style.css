@@ -1030,6 +1030,7 @@ ol {
 }
 
 .product__item__pic {
+	width: 248px;
 	height: 260px;
 	position: relative;
 	background-position: center;
