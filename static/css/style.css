@@ -3895,7 +3895,8 @@ ol {
 		padding: 35px 30px 40px;
 	}
 	.product__item__pic {
-		height: auto;
+		height: 380px;
+    	width: 347px;
 	}
 	.product__item {
 		flex-grow: 1;
