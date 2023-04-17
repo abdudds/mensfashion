@@ -31,7 +31,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', 'mensfashion.abdurahman.online',]
 
-
+CSRF_TRUSTED_ORIGINS = ['https://*.abdurahman.online']
 # Application definition
 
 INSTALLED_APPS = [
