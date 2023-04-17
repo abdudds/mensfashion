@@ -75,7 +75,7 @@
                                         let total = {{total}}
                                         let discount_p = document.getElementById('discount')
                                         let total_p = document.getElementById('total')
-                                        let coupon_url = `/shop/applycoupon/${coupon.id}`
+                                        let coupon_url = `/shop/applycoupon/${coupon.value}`
                                         
                                         $.ajax({url: coupon_url, success: function(result){
                                             if(result.message){
